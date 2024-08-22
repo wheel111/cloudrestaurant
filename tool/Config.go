@@ -7,10 +7,21 @@ import (
 )
 
 type Config struct {
-	AppName string `json:"app_name"`
-	AppMode string `json:"app_mode"`
-	AppHost string `json:"app_host"`
-	AppPort string `json:"app_port"`
+	AppName  string         `json:"app_name"`
+	AppMode  string         `json:"app_mode"`
+	AppHost  string         `json:"app_host"`
+	AppPort  string         `json:"app_port"`
+	Database DatabaseConfig `json:"database"`
+}
+type DatabaseConfig struct {
+	Driver   string `json:"driver"`
+	User     string `json:"user"`
+	Password string `json:"password"`
+	Host     string `json:"host"`
+	Port     string `json:"port"`
+	Dbname   string `json:"dbname"`
+	Charset  string `json:"charset"`
+	ShowSql  bool   `json:"show_sql"`
 }
 
 var cfg *Config = nil

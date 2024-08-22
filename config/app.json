@@ -2,5 +2,15 @@
   "app_name" : "cloudrestaurant",
   "app_mode" : "debug",
   "app_host" : "localhost",
-  "app_port" : "8091"
+  "app_port" : "8091",
+  "database": {
+    "driver": "mysql",
+    "user" : "root",
+    "password" : "Root2002",
+    "host" : "localhost",
+    "port" : "3306",
+    "db_name": "cloudrestaurant",
+    "charset": "utf8",
+    "show_sql" : true
+  }
 }
