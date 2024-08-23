@@ -17,7 +17,8 @@ func main() {
 	app.Run(cfg.AppHost + ":" + cfg.AppPort)
 }
 
-// 注册路由函数
+// 注册路由
 func registerRouter(router *gin.Engine) {
 	new(controller.HelloController).Router(router)
+	new(controller.MemberController).Router(router)
 }

@@ -12,7 +12,16 @@ type Config struct {
 	AppMode  string         `json:"app_mode"`
 	AppHost  string         `json:"app_host"`
 	AppPort  string         `json:"app_port"`
+	Sms      SmsConfig      `json:"sms"`
 	Database DatabaseConfig `json:"database"`
+}
+
+type SmsConfig struct {
+	SignName     string `json:"sign_name"`
+	TemplateCode string `json:"template_code"`
+	RegionId     string `json:"region_id"`
+	AppKey       string `json:"app_key"`
+	AppSecret    string `json:"app_secret"`
 }
 
 // 数据库配置文件结构体
@@ -28,6 +37,10 @@ type DatabaseConfig struct {
 }
 
 var cfg *Config = nil
+
+func GetConfig() *Config {
+	return cfg
+}
 
 // 读取app.json文件 读取对应json配置
 func ParseConfig(path string) (*Config, error) {
