@@ -16,7 +16,7 @@ type MemberService struct {
 func (ms *MemberService) SendCode(phone string) bool {
 	//1.产生验证码
 	code := fmt.Sprintf("%06v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
-	//2.调用短信服务sdk 完成发送
+	//2.调用短信服务sdk 完成发送11
 	config := tool.GetConfig().Sms
 	client, err := dysmsapi.NewClientWithAccessKey(config.RegionId, config.AppKey, config.AppSecret)
 	if err != nil {
