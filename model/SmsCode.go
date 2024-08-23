@@ -1,5 +1,6 @@
 package model
 
+// 短信验证结构体
 type SmsCode struct {
 	Id         int64  `xorm:"pk autoincr" json:"id"`
 	Phone      string `xorm:"varchar(11)" json:"phone"`

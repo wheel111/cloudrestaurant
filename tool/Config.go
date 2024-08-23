@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// 软件配置文件结构体
 type Config struct {
 	AppName  string         `json:"app_name"`
 	AppMode  string         `json:"app_mode"`
@@ -13,6 +14,8 @@ type Config struct {
 	AppPort  string         `json:"app_port"`
 	Database DatabaseConfig `json:"database"`
 }
+
+// 数据库配置文件结构体
 type DatabaseConfig struct {
 	Driver   string `json:"driver"`
 	User     string `json:"user"`
@@ -26,6 +29,7 @@ type DatabaseConfig struct {
 
 var cfg *Config = nil
 
+// 读取app.json文件 读取对应json配置
 func ParseConfig(path string) (*Config, error) {
 	file, err := os.Open(path)
 	if err != nil {
