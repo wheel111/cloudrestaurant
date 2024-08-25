@@ -6,5 +6,5 @@ type SmsCode struct {
 	Phone      string `xorm:"varchar(11)" json:"phone"`
 	BizID      string `xorm:"varchar(30)" json:"biz_id"`
 	Code       string `xorm:"varchar(6)" json:"code"`
-	createTime int64  `xorm:"bigint" json:"create_time"`
+	CreateTime int64  `xorm:"bigint" json:"create_time"`
 }

@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"cloudrestaurant/param"
 	"cloudrestaurant/service"
+	"cloudrestaurant/tool"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,6 +12,7 @@ type MemberController struct {
 
 func (mc *MemberController) Router(engine *gin.Engine) {
 	engine.GET("/api/sendcode", mc.sendSmscode)
+	engine.POST("/api/login_sms", mc.smSLogin)
 }
 
 // http://localhost:8091/api/sendcode?phone=12323112321
@@ -17,22 +20,31 @@ func (mc *MemberController) sendSmscode(c *gin.Context) {
 	// 发送验证码
 	phone, exit := c.GetQuery("phone")
 	if !exit {
-		c.JSON(200, map[string]interface{}{
-			"code": 0,
-			"msg":  "参数解析失败",
-		})
+		tool.Fail(c, "参数解析失败")
 		return
 	}
 	ms := service.MemberService{}
 	isSend := ms.SendCode(phone)
 	if isSend {
-		c.JSON(200, map[string]interface{}{
-			"code": 1,
-			"msg":  "发送成功",
-		})
+		tool.Success(c, "参数解析成功")
 	}
-	c.JSON(200, map[string]interface{}{
-		"code": 0,
-		"msg":  "发送失败",
-	})
+	tool.Fail(c, "参数解析失败")
+}
+
+// 手机号+短信 登陆的方法
+func (mc *MemberController) smSLogin(c *gin.Context) {
+	var smsLoginParam param.SmsLoginParam
+	err := tool.Decode(c.Request.Body, &smsLoginParam)
+	if err != nil {
+		tool.Fail(c, "参数解析失败")
+		return
+	}
+	// 完成手机+验证码登录
+	us := service.MemberService{}
+	member := us.Smslogin(smsLoginParam)
+	if member != nil {
+		tool.Success(c, member)
+	} else {
+		tool.Fail(c, "登录失败")
+	}
 }

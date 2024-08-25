@@ -2,6 +2,7 @@ package tool
 
 import (
 	"cloudrestaurant/model"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 )
 
@@ -9,6 +10,8 @@ import (
 type Orm struct {
 	*xorm.Engine
 }
+
+var DbEngine *Orm
 
 // 创建数据库初始化
 func OrmEngine(cfg *Config) (*Orm, error) {
@@ -23,11 +26,12 @@ func OrmEngine(cfg *Config) (*Orm, error) {
 	// 测试连接
 	engine.ShowSQL(true)
 	// 映射创建表结构
-	err = engine.Sync2(new(model.SmsCode))
+	err = engine.Sync2(new(model.SmsCode), new(model.Member))
 	if err != nil {
 		return nil, err
 	}
 	orm := new(Orm)
 	orm.Engine = engine
+	DbEngine = orm
 	return orm, nil
 }

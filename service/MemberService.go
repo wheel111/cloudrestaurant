@@ -1,6 +1,9 @@
 package service
 
 import (
+	"cloudrestaurant/dao"
+	"cloudrestaurant/model"
+	"cloudrestaurant/param"
 	"cloudrestaurant/tool"
 	"encoding/json"
 	"fmt"
@@ -11,6 +14,30 @@ import (
 )
 
 type MemberService struct {
+}
+
+// 用户手机号+验证码的登陆
+func (ms *MemberService) Smslogin(loginParam param.SmsLoginParam) *model.Member {
+	//1.获取到手机号和验证码
+
+	//2.验证手机号+验证码是否正确
+	md := dao.MemberDao{tool.DbEngine}
+	sms := md.ValidateSmscode(loginParam.Phone, loginParam.Code)
+	if sms.Id == 0 {
+		return nil
+	}
+	//3.根据手机号member表中查询数据
+	member := md.QueryByPhone(loginParam.Phone)
+	if member.Id != 0 {
+		return member
+	}
+	//4.未查询到，新创建一个member记录，并保存
+	user := model.Member{}
+	user.Username = loginParam.Phone
+	user.Mobile = loginParam.Phone
+	user.RegisterTime = time.Now().Unix()
+	user.Id = md.InsertMember(user)
+	return nil
 }
 
 func (ms *MemberService) SendCode(phone string) bool {
@@ -40,8 +67,12 @@ func (ms *MemberService) SendCode(phone string) bool {
 		return false
 	}
 	if response.Code == "OK" {
-		return true
+		smscode := model.SmsCode{Phone: phone, Code: code, BizID: response.BizId, CreateTime: time.Now().Unix()}
+		memberdao := dao.MemberDao{tool.DbEngine}
+		result := memberdao.InsertCode(smscode)
+		if result > 0 {
+			return true
+		}
 	}
-
 	return false
 }
