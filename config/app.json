@@ -14,7 +14,7 @@
     "driver": "mysql",
     "user" : "root",
     "password" : "Root2002",
-    "host" : "124.71.63.32",
+    "host" : "localhost",
     "port" : "3306",
     "db_name": "cloudrestaurant",
     "charset": "utf8",
