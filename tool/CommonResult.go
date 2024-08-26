@@ -7,7 +7,7 @@ const (
 	FAILED  = 1 // 操作失败
 )
 
-// 普通成功返回
+// 成功返回
 func Success(c *gin.Context, v interface{}) {
 	c.JSON(200, map[string]interface{}{
 		"code": SUCCESS,
@@ -16,6 +16,7 @@ func Success(c *gin.Context, v interface{}) {
 	})
 }
 
+// 失败返回
 func Fail(c *gin.Context, v interface{}) {
 	c.JSON(200, map[string]interface{}{
 		"code": FAILED,

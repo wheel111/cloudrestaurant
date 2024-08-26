@@ -19,7 +19,6 @@ type MemberService struct {
 // 用户手机号+验证码的登陆
 func (ms *MemberService) Smslogin(loginParam param.SmsLoginParam) *model.Member {
 	//1.获取到手机号和验证码
-
 	//2.验证手机号+验证码是否正确
 	md := dao.MemberDao{tool.DbEngine}
 	sms := md.ValidateSmscode(loginParam.Phone, loginParam.Code)

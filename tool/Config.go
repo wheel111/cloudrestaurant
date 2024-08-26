@@ -16,6 +16,7 @@ type Config struct {
 	Database DatabaseConfig `json:"database"`
 }
 
+// 短信验证码配置文件结构体
 type SmsConfig struct {
 	SignName     string `json:"sign_name"`
 	TemplateCode string `json:"template_code"`

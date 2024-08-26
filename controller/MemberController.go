@@ -13,6 +13,11 @@ type MemberController struct {
 func (mc *MemberController) Router(engine *gin.Engine) {
 	engine.GET("/api/sendcode", mc.sendSmscode)
 	engine.POST("/api/login_sms", mc.smSLogin)
+	engine.GET("/api/captcha", mc.captcha)
+}
+
+func (mc *MemberController) captcha(c *gin.Context) {
+	tool.GenerateCaptcha(c)
 }
 
 // http://localhost:8091/api/sendcode?phone=12323112321
