@@ -11,6 +11,17 @@ type MemberDao struct {
 	*tool.Orm
 }
 
+// 根据用户名和密码查询
+func (md *MemberDao) Query(name string, password string) *model.Member {
+	var member model.Member
+	_, err := md.Where("username = ? and password = ?", name, password).Get(&member)
+	if err != nil {
+		log.Fatal(err.Error())
+		return nil
+	}
+	return &member
+}
+
 // 确认手机号与验证码正确
 func (md *MemberDao) ValidateSmscode(phone string, code string) *model.SmsCode {
 	var sms model.SmsCode

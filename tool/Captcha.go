@@ -5,3 +5,7 @@ type CaptchaResult struct {
 	Base64Blob   string `json:"base_64_blob"`
 	VertifyValue string `json:"code"`
 }
+
+func GenerateCaptcha() {
+	return
+}

@@ -16,6 +16,24 @@ import (
 type MemberService struct {
 }
 
+// 实现用户登录
+func (ms *MemberService) Login(name string, password string) *model.Member {
+	//1.使用用户名 + 密码 查询用户信息，如果存在用户，返回用户信息
+	md := dao.MemberDao{tool.DbEngine}
+	member := md.Query(name, password)
+	if member.Id != 0 {
+		return member
+	}
+	//2.用户信息不存在，作为新用户保存到数据库中
+	user := model.Member{}
+	user.Username = name
+	user.Password = tool.EncoderSha256(password)
+	user.RegisterTime = time.Now().Unix()
+	result := md.InsertMember(user)
+	user.Id = result
+	return &user
+}
+
 // 用户手机号+验证码的登陆
 func (ms *MemberService) Smslogin(loginParam param.SmsLoginParam) *model.Member {
 	//1.获取到手机号和验证码
