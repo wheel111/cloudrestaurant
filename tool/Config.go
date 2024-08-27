@@ -8,12 +8,13 @@ import (
 
 // 软件配置文件结构体
 type Config struct {
-	AppName  string         `json:"app_name"`
-	AppMode  string         `json:"app_mode"`
-	AppHost  string         `json:"app_host"`
-	AppPort  string         `json:"app_port"`
-	Sms      SmsConfig      `json:"sms"`
-	Database DatabaseConfig `json:"database"`
+	AppName     string         `json:"app_name"`
+	AppMode     string         `json:"app_mode"`
+	AppHost     string         `json:"app_host"`
+	AppPort     string         `json:"app_port"`
+	Sms         SmsConfig      `json:"sms"`
+	Database    DatabaseConfig `json:"database"`
+	RedisConfig RedisConfig    `json:"redis_config"`
 }
 
 // 短信验证码配置文件结构体
@@ -35,6 +36,13 @@ type DatabaseConfig struct {
 	Dbname   string `json:"db_name"`
 	Charset  string `json:"charset"`
 	ShowSql  bool   `json:"show_sql"`
+}
+
+type RedisConfig struct {
+	Addr     string `json:"addr"`
+	Port     string `json:"port"`
+	Password string `json:"password"`
+	Db       int    `json:"db"`
 }
 
 var cfg *Config = nil
