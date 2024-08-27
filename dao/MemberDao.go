@@ -11,6 +11,17 @@ type MemberDao struct {
 	*tool.Orm
 }
 
+// 修改数据库头像信息
+func (md *MemberDao) UpdateMemberAvatar(userId int64, filename string) int64 {
+	member := model.Member{Avatar: filename}
+	result, err := md.Where(" id = ?", userId).Update(member)
+	if err != nil {
+		log.Fatal(err.Error())
+		return 0
+	}
+	return result
+}
+
 // 根据用户名和密码查询
 func (md *MemberDao) Query(name string, password string) *model.Member {
 	var member model.Member

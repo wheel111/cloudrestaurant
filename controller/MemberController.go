@@ -1,10 +1,15 @@
 package controller
 
 import (
+	"cloudrestaurant/model"
 	"cloudrestaurant/param"
 	"cloudrestaurant/service"
 	"cloudrestaurant/tool"
+	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"strconv"
+	"time"
 )
 
 type MemberController struct {
@@ -16,6 +21,44 @@ func (mc *MemberController) Router(engine *gin.Engine) {
 	engine.GET("/api/captcha", mc.captcha)
 	//login_pwd
 	engine.POST("/api/login_pwd", mc.nameLogin)
+
+	//头像上传
+	engine.POST("/api/upload/avator", mc.uploadAvator)
+}
+
+// 头像上传
+func (mc *MemberController) uploadAvator(c *gin.Context) {
+	//1.解析上传的参数：file、user_id
+	userId := c.PostForm("userId")
+	fmt.Println(userId)
+	file, err := c.FormFile("avatar")
+	if err != nil || userId == "" {
+		tool.Fail(c, "参数解析失败")
+		return
+	}
+	//2.判断user_id对应的用户是否已经登陆
+	session := tool.GetSession(c, "user_"+userId)
+	if session == nil {
+		tool.Fail(c, "参数不合法")
+		return
+	}
+	var member model.Member
+	json.Unmarshal(session.([]byte), &member)
+	//3. file保存到本地
+	filename := "./uploadfile/" + strconv.FormatInt(time.Now().Unix(), 10) + file.Filename
+	err = c.SaveUploadedFile(file, filename)
+	if err != nil {
+		tool.Fail(c, "头像更新失败")
+		return
+	}
+	//4.将保存后的文件本地路径，保存到用户表中的头像字段
+	memberService := service.MemberService{}
+	path := memberService.UploadAvatar(member.Id, filename[1:])
+	if path != "" {
+		tool.Success(c, "http://localhost:8091"+path)
+		return
+	}
+	//5.返回结果
 }
 
 // 用户名+密码、验证码登录
@@ -30,8 +73,18 @@ func (mc *MemberController) nameLogin(c *gin.Context) {
 	//2.登录
 	ms := service.MemberService{}
 	member := ms.Login(loginParam.Name, loginParam.Password)
-	if member == nil {
+	if member.Id != 0 {
+		// 用户信息保存到session
+		sess, _ := json.Marshal(member)
+		err = tool.SetSession(c, "user_"+string(member.Id), sess)
+		if err != nil {
+			tool.Fail(c, "登陆失败")
+			return
+		}
+		tool.Success(c, &member)
+		return
 	}
+	tool.Fail(c, "登陆失败")
 }
 func (mc *MemberController) captcha(c *gin.Context) {
 	tool.GenerateCaptcha()
@@ -65,6 +118,12 @@ func (mc *MemberController) smSLogin(c *gin.Context) {
 	us := service.MemberService{}
 	member := us.Smslogin(smsLoginParam)
 	if member != nil {
+		sess, _ := json.Marshal(member)
+		err = tool.SetSession(c, "user_"+string(member.Id), sess)
+		if err != nil {
+			tool.Fail(c, "登陆失败")
+			return
+		}
 		tool.Success(c, member)
 	} else {
 		tool.Fail(c, "登录失败")

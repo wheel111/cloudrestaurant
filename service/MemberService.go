@@ -16,6 +16,15 @@ import (
 type MemberService struct {
 }
 
+func (ms *MemberService) UploadAvatar(userId int64, filename string) string {
+	memberdao := dao.MemberDao{tool.DbEngine}
+	result := memberdao.UpdateMemberAvatar(userId, filename)
+	if result == 0 {
+		return ""
+	}
+	return filename
+}
+
 // 实现用户登录
 func (ms *MemberService) Login(name string, password string) *model.Member {
 	//1.使用用户名 + 密码 查询用户信息，如果存在用户，返回用户信息

@@ -22,12 +22,18 @@ func main() {
 	registerRouter(app)
 	// 设置全局跨域访问
 	app.Use(Cors())
+	// 集成session功能
+	tool.InitSession(app)
 	app.Run(cfg.AppHost + ":" + cfg.AppPort)
 }
+
+// 注册路由
 func registerRouter(router *gin.Engine) {
 	new(controller.HelloController).Router(router)
 	new(controller.MemberController).Router(router)
 }
+
+// 处理跨域请求中间件
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
