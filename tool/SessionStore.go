@@ -7,6 +7,7 @@ import (
 	"log"
 )
 
+// session 中间件初始化
 func InitSession(engine *gin.Engine) {
 	config := GetConfig().RedisConfig
 	store, err := redis.NewStore(10, "tcp", config.Addr+":"+config.Port, config.Password, []byte("secret"))
