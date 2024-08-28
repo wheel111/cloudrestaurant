@@ -9,6 +9,7 @@ import (
 	"io"
 )
 
+// Sha256加密
 func EncoderSha256(data string) string {
 	h := sha256.New()
 	h.Write([]byte(data))
@@ -18,6 +19,7 @@ func EncoderSha256(data string) string {
 	return string(s)
 }
 
+// MD5加密
 func MD5(data string) string {
 	h := md5.New()
 	io.WriteString(h, data)
@@ -25,9 +27,13 @@ func MD5(data string) string {
 	result := fmt.Sprintf("%x", bydate)
 	return result
 }
+
+// Base64加密
 func Base64Encode(data string) string {
 	return base64.StdEncoding.EncodeToString([]byte(data))
 }
+
+// Base64解密
 func Base64Decode(data string) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(data)
 }

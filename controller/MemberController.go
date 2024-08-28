@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"os"
 	"strconv"
 	"time"
 )
@@ -45,17 +46,22 @@ func (mc *MemberController) uploadAvator(c *gin.Context) {
 	var member model.Member
 	json.Unmarshal(session.([]byte), &member)
 	//3. file保存到本地
-	filename := "./uploadfile/" + strconv.FormatInt(time.Now().Unix(), 10) + file.Filename
-	err = c.SaveUploadedFile(file, filename)
+	fileName := "./uploadfile/" + strconv.FormatInt(time.Now().Unix(), 10) + file.Filename
+	err = c.SaveUploadedFile(file, fileName)
 	if err != nil {
 		tool.Fail(c, "头像更新失败")
 		return
 	}
+	//上传文件到fastDFS系统
+	fileId := tool.UploadFile(fileName)
+	if fileId != "" {
+		os.Remove(fileName)
+	}
 	//4.将保存后的文件本地路径，保存到用户表中的头像字段
 	memberService := service.MemberService{}
-	path := memberService.UploadAvatar(member.Id, filename[1:])
+	path := memberService.UploadAvatar(member.Id, fileId)
 	if path != "" {
-		tool.Success(c, "http://localhost:8091"+path)
+		tool.Success(c, tool.FileServerAddr()+"/"+path)
 		return
 	}
 	//5.返回结果
