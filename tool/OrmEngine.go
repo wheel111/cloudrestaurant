@@ -16,7 +16,7 @@ var DbEngine *Orm
 // 创建数据库初始化
 func OrmEngine(cfg *Config) (*Orm, error) {
 	database := cfg.Database
-	// 创建短信认证结构体映射成数据库表结构
+	// 创建连接
 	conn := database.User + ":" + database.Password + "@tcp(" + database.Host + ":" + database.Port + ")/" +
 		database.Dbname + "?charset=" + database.Charset
 	engine, err := xorm.NewEngine("mysql", conn)
@@ -26,7 +26,7 @@ func OrmEngine(cfg *Config) (*Orm, error) {
 	// 测试连接
 	engine.ShowSQL(true)
 	// 映射创建表结构
-	err = engine.Sync2(new(model.SmsCode), new(model.Member))
+	err = engine.Sync2(new(model.SmsCode), new(model.Member), new(model.FoodCategory))
 	if err != nil {
 		return nil, err
 	}
