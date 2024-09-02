@@ -25,6 +25,33 @@ func (mc *MemberController) Router(engine *gin.Engine) {
 
 	//头像上传
 	engine.POST("/api/upload/avator", mc.uploadAvator)
+	//用户信息查询
+	engine.GET("/api/userinfo", mc.userInfo)
+}
+
+// 用户信息进行查询
+func (mc *MemberController) userInfo(c *gin.Context) {
+	cookie, err := tool.CookieAuth(c)
+	if err != nil {
+		c.Abort()
+		tool.Fail(c, "用户还未登录")
+		return
+	}
+	memberService := service.MemberService{}
+	member := memberService.GetUserInfo(cookie.Value)
+	if member != nil {
+		tool.Success(c, map[string]interface{}{
+			"id":            member.Id,
+			"user_name":     member.Username,
+			"mobile":        member.Mobile,
+			"register_time": member.RegisterTime,
+			"avatar":        member.Avatar,
+			"balance":       member.Balance,
+			"city":          member.City,
+		})
+		return
+	}
+	tool.Fail(c, "获取用户信息失败")
 }
 
 // 头像上传
@@ -130,6 +157,7 @@ func (mc *MemberController) smSLogin(c *gin.Context) {
 			tool.Fail(c, "登陆失败")
 			return
 		}
+		c.SetCookie("cookie_user", strconv.Itoa(int(member.Id)), 10*60, "/", "localhost", true, true)
 		tool.Success(c, member)
 	} else {
 		tool.Fail(c, "登录失败")

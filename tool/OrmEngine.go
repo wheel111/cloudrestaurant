@@ -27,7 +27,7 @@ func OrmEngine(cfg *Config) (*Orm, error) {
 	// 测试连接
 	engine.ShowSQL(true)
 	// 映射创建表结构
-	err = engine.Sync2(new(model.SmsCode), new(model.Member), new(model.FoodCategory), new(model.Shop))
+	err = engine.Sync2(new(model.SmsCode), new(model.Member), new(model.FoodCategory), new(model.Shop), new(model.Service))
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func OrmEngine(cfg *Config) (*Orm, error) {
 	return orm, nil
 }
 
-// 想shop表中初始化数据
+// 向shop表中初始化数据
 func InitShopData() {
 	shops := []model.Shop{}
 	session := DbEngine.NewSession()

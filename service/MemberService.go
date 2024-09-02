@@ -10,10 +10,21 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
 	"log"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
 type MemberService struct {
+}
+
+func (ms *MemberService) GetUserInfo(userId string) *model.Member {
+	id, err := strconv.Atoi(userId)
+	if err != nil {
+		return nil
+	}
+	memberDao := dao.MemberDao{
+		tool.DbEngine}
+	return memberDao.QueryMemberById(int64(id))
 }
 
 func (ms *MemberService) UploadAvatar(userId int64, filename string) string {
