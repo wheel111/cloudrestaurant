@@ -26,7 +26,7 @@ func OrmEngine(cfg *Config) (*Orm, error) {
 	// 测试连接
 	engine.ShowSQL(true)
 	// 映射创建表结构
-	err = engine.Sync2(new(model.SmsCode), new(model.Member), new(model.FoodCategory))
+	err = engine.Sync2(new(model.SmsCode), new(model.Member), new(model.FoodCategory), new(model.Shop))
 	if err != nil {
 		return nil, err
 	}
