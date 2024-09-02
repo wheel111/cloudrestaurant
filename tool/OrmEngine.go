@@ -2,6 +2,7 @@ package tool
 
 import (
 	"cloudrestaurant/model"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 )
@@ -33,5 +34,30 @@ func OrmEngine(cfg *Config) (*Orm, error) {
 	orm := new(Orm)
 	orm.Engine = engine
 	DbEngine = orm
+	// 插入初始化数据
+	InitShopData()
 	return orm, nil
+}
+
+// 想shop表中初始化数据
+func InitShopData() {
+	shops := []model.Shop{}
+	session := DbEngine.NewSession()
+	defer session.Close()
+	//事务操作： 事务开始， 执行操作（回滚），提交事务
+	err := session.Begin()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	for _, shop := range shops {
+		_, err := session.Insert(&shop)
+		if err != nil {
+			session.Rollback()
+			return
+		}
+		err = session.Commit()
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	}
 }
