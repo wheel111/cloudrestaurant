@@ -24,7 +24,8 @@ func (sc *ShopService) ShopList(long, lat string) []model.Shop {
 }
 
 // 根据关键字查询对应商家信息
-func (shopService *ShopService) SearchShops(long, lat, keyword string) []model.Shop {
+
+func (sc *ShopService) SearchShops(long, lat, keyword string) []model.Shop {
 	shopDao := dao.NewShopDao()
 	longitude, err := strconv.ParseFloat(long, 10)
 	if err != nil {
