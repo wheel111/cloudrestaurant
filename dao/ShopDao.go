@@ -13,6 +13,15 @@ func NewShopDao() *ShopDao {
 	return &ShopDao{tool.DbEngine}
 }
 
+func (sDao *ShopDao) QueryServiceByShopId(shopId int64) []model.Service {
+	var services []model.Service
+	err := sDao.Orm.Table("service").Join("INNER", "shop_service", "service.id = shop_service.service_id and shop_service.shop_id=?", shopId).Find(&services)
+	if err != nil {
+		return nil
+	}
+	return services
+}
+
 const DEFAULT_RANGE = 5
 
 func (shopDao *ShopDao) QueryShop(long, lati float64, keyword string) []model.Shop {

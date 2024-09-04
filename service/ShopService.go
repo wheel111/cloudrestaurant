@@ -9,6 +9,12 @@ import (
 type ShopService struct {
 }
 
+// 根据shopId获取商家服务
+func (sc *ShopService) GetService(shopId int64) []model.Service {
+	shopDao := dao.NewShopDao()
+	return shopDao.QueryServiceByShopId(shopId)
+}
+
 // 查询商铺列表数据
 func (sc *ShopService) ShopList(long, lat string) []model.Shop {
 	longitude, err := strconv.ParseFloat(long, 10)
