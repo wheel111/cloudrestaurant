@@ -1,16 +1,16 @@
 package controller
 
 import (
-	"cloudrestaurant/model"
-	"cloudrestaurant/param"
-	"cloudrestaurant/service"
-	"cloudrestaurant/tool"
+	"blog/model"
+	"blog/param"
+	"blog/service"
+	"blog/tool"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"os"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type MemberController struct {
@@ -18,7 +18,6 @@ type MemberController struct {
 
 func (mc *MemberController) Router(engine *gin.Engine) {
 	engine.GET("/api/sendcode", mc.sendSmscode)
-	engine.POST("/api/login_sms", mc.smSLogin)
 	engine.GET("/api/captcha", mc.captcha)
 	//login_pwd
 	engine.POST("/api/login_pwd", mc.nameLogin)
@@ -70,7 +69,7 @@ func (mc *MemberController) uploadAvator(c *gin.Context) {
 		tool.Fail(c, "参数不合法")
 		return
 	}
-	var member model.Member
+	var member model.User
 	json.Unmarshal(session.([]byte), &member)
 	//3. file保存到本地
 	fileName := "./uploadfile/" + strconv.FormatInt(time.Now().Unix(), 10) + file.Filename
@@ -79,18 +78,8 @@ func (mc *MemberController) uploadAvator(c *gin.Context) {
 		tool.Fail(c, "头像更新失败")
 		return
 	}
-	//上传文件到fastDFS系统
-	fileId := tool.UploadFile(fileName)
-	if fileId != "" {
-		os.Remove(fileName)
-	}
 	//4.将保存后的文件本地路径，保存到用户表中的头像字段
-	memberService := service.MemberService{}
-	path := memberService.UploadAvatar(member.Id, fileId)
-	if path != "" {
-		tool.Success(c, tool.FileServerAddr()+"/"+path)
-		return
-	}
+
 	//5.返回结果
 }
 
@@ -137,29 +126,4 @@ func (mc *MemberController) sendSmscode(c *gin.Context) {
 		tool.Success(c, "参数解析成功")
 	}
 	tool.Fail(c, "参数解析失败")
-}
-
-// 手机号+短信 登陆的方法
-func (mc *MemberController) smSLogin(c *gin.Context) {
-	var smsLoginParam param.SmsLoginParam
-	err := tool.Decode(c.Request.Body, &smsLoginParam)
-	if err != nil {
-		tool.Fail(c, "参数解析失败")
-		return
-	}
-	// 完成手机+验证码登录
-	us := service.MemberService{}
-	member := us.Smslogin(smsLoginParam)
-	if member != nil {
-		sess, _ := json.Marshal(member)
-		err = tool.SetSession(c, "user_"+string(member.Id), sess)
-		if err != nil {
-			tool.Fail(c, "登陆失败")
-			return
-		}
-		c.SetCookie("cookie_user", strconv.Itoa(int(member.Id)), 10*60, "/", "localhost", true, true)
-		tool.Success(c, member)
-	} else {
-		tool.Fail(c, "登录失败")
-	}
 }

@@ -13,6 +13,6 @@ func (hello *HelloController) Router(engine *gin.Engine) {
 // hello接口响应成功返回json值
 func (hello *HelloController) Hello(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{
-		"message": "Hello cloudrestaurant",
+		"message": "欢迎来到个人博客论坛",
 	})
 }

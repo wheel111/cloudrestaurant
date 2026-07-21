@@ -1,5 +1,5 @@
 {
-  "app_name" : "cloudrestaurant",
+  "app_name" : "liang_blog",
   "app_mode" : "debug",
   "app_host" : "localhost",
   "app_port" : "8091",
@@ -12,18 +12,18 @@
   },
   "database": {
     "driver": "mysql",
-    "user" : "root",
-    "password" : "Root2002",
-    "host" : "localhost",
-    "port" : "3306",
-    "db_name": "cloudrestaurant",
-    "charset": "utf8",
+    "user" : "blog",
+    "password" : "lhj83582326",
+    "host" : "113.45.45.80",
+    "port" : "33006",
+    "db_name": "blog",
+    "charset": "utf8mb4",
     "show_sql" : true
   },
   "redis_config": {
-    "addr" : "localhost",
+    "addr" : "113.45.45.80",
     "port" : "6379",
-    "password" : "123456",
-    "db" : 0
+    "password" : "lhj83582326",
+    "db" : 1
   }
 }

@@ -1,12 +1,13 @@
 package main
 
 import (
-	"cloudrestaurant/controller"
-	"cloudrestaurant/tool"
+	"blog/controller"
+	"blog/tool"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -14,7 +15,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	_, err = tool.OrmEngine(cfg)
+	_, err = tool.GormEngine(cfg)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -31,9 +32,6 @@ func main() {
 func registerRouter(router *gin.Engine) {
 	new(controller.HelloController).Router(router)
 	new(controller.MemberController).Router(router)
-	new(controller.FoodCategoryController).Router(router)
-	new(controller.ShopController).Router(router)
-	new(controller.FoodController).Router(router)
 }
 
 // 处理跨域请求中间件
